@@ -1,11 +1,11 @@
 module.exports = {
-  title: 'Next Template',
-  description: 'Next PWA Template',
-  siteUrl: 'https://github.com/ademilter/next-web-template',
+  title: 'Next Boilerplate',
+  description: 'Next Boilerplate',
+  siteUrl: 'localhost:5100',
   googleAnalytic: 'X-XXXXXXXXXX',
   author: {
-    email: 'team@socialtradex.com',
-    name: 'Social Trade Team'
+    email: 'bilal.irmak@outlook.com',
+    name: 'Bilal IRMAK'
   },
   lang: 'en'
 }
