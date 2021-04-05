@@ -1,31 +1,46 @@
 import http from "./base.api";
-import UserStore from "../store/user.store";
+import {getAuthHeader} from "../helpers/authorization";
 
-const responseInterceptors = http._getHttpClient().interceptors.response;
+const axiosInterceptors = http._getHttpClient().interceptors;
 
-responseInterceptors.use(
+axiosInterceptors.request.use(async function (config) {
+  const [, header] = await getAuthHeader().toArray()
+
+  config.headers = header
+
+  return config;
+
+}, function (error) {
+  // Do something with request error
+  return Promise.reject(error);
+});
+
+
+axiosInterceptors.response.use(
   (response) => {
+
     return response.data;
   },
   (error) => {
+
+    console.log(error.response, "ERRORR")
+
     const errorObj = {
-      status: error.response.status,
-      statusText: error.response.statusText,
-      message: error.message,
-      data: error.response.data,
-      error: null,
+      // // status: error.response.status,
+      // statusText: error.response.statusText,
+      // message: error.message,
+      // data: error.response.data,
+      // error: null,
     };
 
     // Interceptor Helpers
-    const errorMessage = ErrorFormatter(errorObj);
-
     // if (errorMessage === "wrong_token") {
     //   UserStore.logout();
     // } else {
     //   message.error(i18n.t(errorMessage));
     // }
 
-    errorObj.error = errorMessage;
+    // errorObj.error = ErrorFormatter(errorObj);
 
     // // Error Interceptors
     // Authentication(errorObj);
@@ -55,5 +70,5 @@ const ErrorFormatter = (error) => {
 //   }
 // };
 
-const interceptors = responseInterceptors;
+const interceptors = axiosInterceptors;
 export default interceptors;

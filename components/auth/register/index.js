@@ -2,9 +2,9 @@ import React from 'react';
 
 const Register = () => {
   return (
-    <div>
-        REGISTER COMP
-    </div>
+    <p>
+      REGISTER COMP
+    </p>
   );
 };
 

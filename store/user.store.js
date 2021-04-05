@@ -1,5 +1,6 @@
 import {makeAutoObservable, action, runInAction} from "mobx";
 import userAPI from "../api/user.api";
+import StoreProvider from "../utils/store-provider";
 
 
 class UserStore {
@@ -15,50 +16,39 @@ class UserStore {
 
 
   async verifySession() {
-    if (!this.loading) {
-      runInAction(() => {
-        this.loading = true;
-      });
+    // !this.loading && (this.loading = true)
+    const [err, response] = await userAPI.verifySession().toArray()
+    if (!err && response) {
+      console.log('USER:', response)
+      await runInAction(async () => {
+        this.user = response.user
+        !this.isLogin && (this.isLogin = true)
+        this.loading = false
+      })
+
+      return true
     }
+    this.removeUser()
+    return false
+  }
 
-    const [err, response] = await userAPI.verifySession().toArray();
-
-    if (!err) {
-      runInAction(() => {
-        this.user = response;
-        this.isLogin = true;
-        this.loading = false;
-      });
-
-      return true;
+  async setLogin(login) {
+    if (!login) {
+      // localStorage.removeItem('token')
+      const AuthStore = StoreProvider.getStore('AuthStore')
+      await AuthStore.logout()
     }
+    this.isLogin = login
 
-    this.removeUser();
-
-    return false;
-  };
+  }
 
   removeUser() {
-    this.loading = false;
-    this.isLogin = false;
-  };
+    this.setLogin(false)
+    this.loading = false
+    this.user = null
+  }
 
 
-  async setTheme() {
-    // this.darkTheme = !this.darkTheme;
-    // localStorage.setItem("darkTheme", JSON.stringify(this.darkTheme));
-  };
-
-  async getTheme() {
-    // const dark = localStorage.getItem("darkTheme");
-    // runInAction(() => {
-    //   if (JSON.parse(dark)) {
-    //     this.darkTheme = dark;
-    //   } else {
-    //     this.darkTheme = false;
-    //   }
-    // });
-  };
 }
 
 export default new UserStore();
