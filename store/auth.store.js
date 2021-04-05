@@ -1,6 +1,6 @@
 import { action, makeAutoObservable } from "mobx";
 import authAPI from "../api/auth.api";
-import StorageService from "../utils/session";
+import StorageService from "../utils/storage";
 
 class AuthStore {
   accessToken = null;
@@ -32,7 +32,7 @@ class AuthStore {
   };
 
   async logout () {
-    await localStorage.removeItem("token");
+    await StorageService.removeItem("token");
   };
 
 }
